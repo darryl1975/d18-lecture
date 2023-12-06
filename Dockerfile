@@ -1,9 +1,14 @@
-FROM maven:3-eclipse-temurin-21
+# Build stage
+
+FROM maven:3-eclipse-temurin-21 AS builder
 
 LABEL MAINTAINER="darrylng@nus.edu.sg"
 LABEL APPLICATION="Healthcheck Application"
 
 WORKDIR /usr/app
+
+ARG APP_DIR=/app
+WORKDIR ${APP_DIR}
 
 COPY mvnw .
 COPY mvnw.cmd .
@@ -13,9 +18,16 @@ COPY src src
 
 RUN mvn package -Dmaven.test.skip=true
 
-#COPY /target/d18-lecture-0.0.1-SNAPSHOT.jar healthcheck.jar
 
-ENTRYPOINT [ "java", "-jar", "target/d18-lecture-0.0.1-SNAPSHOT.jar" ]
+# Publish stage
+FROM openjdk:21-jdk
+
+ARG APP_DIR=/app
+WORKDIR ${APP_DIR}
+
+COPY --from=builder /app/target/d18-lecture-0.0.1-SNAPSHOT.jar healthcheck.jar 
+
+ENTRYPOINT [ "java", "-jar", "healthcheck.jar" ]
 
 EXPOSE 8080
 
