@@ -27,7 +27,11 @@ WORKDIR ${APP_DIR}
 
 COPY --from=builder /app/target/d18-lecture-0.0.1-SNAPSHOT.jar healthcheck.jar 
 
-ENTRYPOINT [ "java", "-jar", "healthcheck.jar" ]
+# e.g. java -jar healthcheck.jar
+# ENTRYPOINT [ "java", "-jar", "healthcheck.jar" ]
+
+# e.g. /bin/sh -c "java -jar healthcheck.jar"
+ENTRYPOINT java -jar healthcheck.jar
 
 EXPOSE 8080
 
