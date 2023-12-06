@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -18,5 +19,22 @@ public class DemoController {
         } catch (Exception ex) {
             return new ResponseEntity<>("Error running Springboot...", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // day 18 - slide 8
+    @GetMapping("/healthz")
+    public ModelAndView getHealthz() {
+
+        ModelAndView mav = new ModelAndView();
+        try {
+
+            mav.setViewName("healthy");
+            mav.setStatus(HttpStatusCode.valueOf(200));
+        } catch (Exception ex) {
+            mav.setViewName("unhealth");
+            mav.setStatus(HttpStatusCode.valueOf(500));
+        }
+
+        return mav;
     }
 }
